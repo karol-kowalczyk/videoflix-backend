@@ -1,6 +1,7 @@
 from .models import Video
 from django.dispatch import receiver
 from django.db.models.signals import post_save, post_delete
+from .tasks import convert_480p
 import os
 
 @receiver(post_save, sender=Video)
@@ -8,6 +9,7 @@ def video_post_save(sender, instance, created, **kwargs):
     print('Video save')
     if created:
         print('New video created')
+        convert_480p(instance.video_file.path)
 
 @receiver(post_delete, sender=Video)
 def auto_delete_file_on_delete(sender, instance, **kwargs):
