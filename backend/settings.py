@@ -45,7 +45,10 @@ INSTALLED_APPS = [
     'videoflix_app.apps.VideoflixAppConfig',
     'django_rq',
     'import_export',
+    'users'
 ]
+
+AUTH_USER_MODEL = 'users.CustomUser'
 
 IMPORT_EXPORT_USE_TRANSACTIONS = True
 
