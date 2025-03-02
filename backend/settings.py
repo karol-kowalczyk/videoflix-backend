@@ -43,8 +43,13 @@ INSTALLED_APPS = [
     'rest_framework',
     'debug_toolbar',
     'videoflix_app.apps.VideoflixAppConfig',
-    'django_rq'
+    'django_rq',
+    'import_export',
 ]
+
+IMPORT_EXPORT_USE_TRANSACTIONS = True
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'static/staticfiles')
 
 CACHES = {
     "default": {

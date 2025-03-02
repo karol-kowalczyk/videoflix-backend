@@ -1,6 +1,12 @@
 from django.contrib import admin
+from import_export import resources
+from import_export.admin import ImportExportModelAdmin
 from .models import Video
 
-@admin.register(Video)
-class VideoAdmin(admin.ModelAdmin):
-    list_display = ('title', 'created_at')  # Optional: Felder für die Admin-Ansicht
+class VideoResource(resources.ModelResource):
+    class Meta:
+        model = Video
+
+@admin.register(Video)  # This is enough, no need for admin.site.register(Video)
+class VideoAdmin(ImportExportModelAdmin):
+    pass
