@@ -28,16 +28,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-CACHES = {
-    "default": {
-        "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://127.0.0.1:6379/1",
-        "OPTIONS": {
-            "CLIENT_CLASS": "django_redis.client.DefaultClient"
-        },
-        "KEY_PREFIX": "videoflix"
-    }
-}
 
 
 # Application definition
@@ -51,19 +41,50 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'debug_toolbar',
     'videoflix_app.apps.VideoflixAppConfig',
+    'django_rq'
 ]
 
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": os.environ.get('REDIS_LOCATION'),
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            "PASSWORD": os.environ.get('REDIS_PASSWORD', None),
+        },
+        "KEY_PREFIX": ('REDIS_KEY_PREFIX', '')
+    }
+}
+
+RQ_QUEUES = {
+    'default': {
+        'HOST': os.environ.get('RQ_DEFAULT_HOST', 'localhost'),
+        'PORT': os.environ.get('RQ_DEFAULT_PORT', 6379),
+        'DB': os.environ.get('RQ_DEFAULT_DB', 0),
+        'PASSWORD': os.environ.get('RQ_DEFAULT_PASSWORD', None),  # Ensure this is correct
+        'DEFAULT_TIMEOUT': os.environ.get('RQ_DEFAULT_TIMEOUT', 360),
+    },
+}
+
+
+# If you need custom exception handlers
+RQ_EXCEPTION_HANDLERS = []
+
 MIDDLEWARE = [
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
 ]
+
+CACHE_TTL = 60 * 15
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:4200",
@@ -123,6 +144,10 @@ AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
+]
+
+INTERNAL_IPS = [
+    '127.0.0.1',
 ]
 
 
