@@ -45,6 +45,8 @@ CACHES = {
     }
 }
 
+CACHE_TTL = 60 * 15
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -57,7 +59,32 @@ INSTALLED_APPS = [
     'rest_framework',
     'content.apps.ContentConfig',
     'corsheaders',
+    'django_rq',
+    'import_export',
+    'users',
 ]
+
+AUTH_USER_MODEL = 'users.CustomUser'
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+}
+
+RQ_QUEUES = {
+    'default': {
+        'HOST': os.environ.get('RQ_DEFAULT_HOST', 'localhost'),
+        'PORT': os.environ.get('RQ_DEFAULT_PORT', 6379),
+        'DB': os.environ.get('RQ_DEFAULT_DB', 0),
+        'PASSWORD': os.environ.get('RQ_DEFAULT_PASSWORD', None),
+        'DEFAULT_TIMEOUT': os.environ.get('RQ_DEFAULT_TIMEOUT', 360),
+    },
+}
+
+# If you need custom exception handlers
+RQ_EXCEPTION_HANDLERS = []
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -70,6 +97,9 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+IMPORT_EXPORT_USE_TRANSACTIONS = True
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 ROOT_URLCONF = 'videoflix_app.urls'
 
