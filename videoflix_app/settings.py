@@ -45,7 +45,6 @@ CACHES = {
     }
 }
 
-
 # Application definition
 
 INSTALLED_APPS = [
