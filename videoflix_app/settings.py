@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-#d91((1kh9lzw)%68r6+4x^24^3_rc#m2(5+9%^@kjl2b)^t*g
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['http://127.0.0.1:5500', '127.0.0.1']
+ALLOWED_HOSTS = ['http://127.0.0.1:5500', '127.0.0.1', 'localhost:8000', 'localhost']
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:4200",      # Standard Angular-Port
