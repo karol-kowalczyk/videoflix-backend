@@ -1,0 +1,7 @@
+from rest_framework import serializers
+from .models import Video
+
+class VideoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Video
+        fields = ['id', 'created_at', 'title', 'description', 'video_file']  # Anpassung: 'created_at' statt 'uploaded_at'

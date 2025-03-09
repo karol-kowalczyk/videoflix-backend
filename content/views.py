@@ -1,3 +1,19 @@
 from django.shortcuts import render
+from django.views.decorators.cache import cache_page
+from django.core.cache.backends.base import DEFAULT_TIMEOUT
+from django.conf import settings
+from .models import Video
+from .serializers import VideoSerializer
+from rest_framework import viewsets
 
-# Create your views here.
+CACHE_TTL = getattr(settings, 'CACHE_TTL', DEFAULT_TIMEOUT)
+
+@cache_page(CACHE_TTL)
+def recipes_view(request):
+    return render(request, 'cookbook/recipes.html', {
+        'recipes': get_recipes()  # Entferne dies, wenn get_recipes() nicht definiert ist
+    })
+
+class VideoViewSet(viewsets.ModelViewSet):
+    queryset = Video.objects.all()
+    serializer_class = VideoSerializer

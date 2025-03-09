@@ -15,16 +15,13 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include  # Add include
+from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 
-# Ensure Debug Toolbar is only added in DEBUG mode
 urlpatterns = [
     path('admin/', admin.site.urls),
-    # path('django-rq/', include('django_rq.urls')),
-]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-
-# if settings.DEBUG:
-#     import debug_toolbar
-#     urlpatterns += [path('__debug__/', include(debug_toolbar.urls))]  # Now 'include' is defined
+    path('django-rq/', include('django_rq.urls')),
+    path('users/', include('users.api.urls')),
+    path('api/', include('content.urls')),  # Neue Zeile für die content-API
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

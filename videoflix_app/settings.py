@@ -26,13 +26,26 @@ SECRET_KEY = 'django-insecure-#d91((1kh9lzw)%68r6+4x^24^3_rc#m2(5+9%^@kjl2b)^t*g
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['http://127.0.0.1:5500', '127.0.0.1']
+ALLOWED_HOSTS = ['http://127.0.0.1:5500', '127.0.0.1', 'localhost:8000', 'localhost']
 
 CORS_ALLOWED_ORIGINS = [
-   "http://localhost:4200",      # Standard Angular-Port
-   "http://localhost:57639",     # Dein aktueller Port
-   "http://127.0.0.1:8000",
+    "http://localhost:4200",      # Standard Angular-Port
+    "http://localhost:57639",     # Dein aktueller Port
+    "http://127.0.0.1:8000",
 ]
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379/1",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient"
+        },
+        "KEY_PREFIX": "videoflix"
+    }
+}
+
+CACHE_TTL = 60 * 15
 
 # Application definition
 
@@ -46,7 +59,32 @@ INSTALLED_APPS = [
     'rest_framework',
     'content.apps.ContentConfig',
     'corsheaders',
+    'django_rq',
+    'import_export',
+    'users',
 ]
+
+AUTH_USER_MODEL = 'users.CustomUser'
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+}
+
+RQ_QUEUES = {
+    'default': {
+        'HOST': os.environ.get('RQ_DEFAULT_HOST', 'localhost'),
+        'PORT': os.environ.get('RQ_DEFAULT_PORT', 6379),
+        'DB': os.environ.get('RQ_DEFAULT_DB', 0),
+        'PASSWORD': os.environ.get('RQ_DEFAULT_PASSWORD', None),
+        'DEFAULT_TIMEOUT': os.environ.get('RQ_DEFAULT_TIMEOUT', 360),
+    },
+}
+
+# If you need custom exception handlers
+RQ_EXCEPTION_HANDLERS = []
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -59,6 +97,9 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+IMPORT_EXPORT_USE_TRANSACTIONS = True
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 ROOT_URLCONF = 'videoflix_app.urls'
 
@@ -133,4 +174,18 @@ STATIC_URL = 'static/'
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
+from decouple import config
+
+DEFAULT_FROM_EMAIL = 'no-reply@videoflix.karol-kowalczyk.de'
+
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'mail.karol-kowalczyk.de'
+EMAIL_PORT = 465
+EMAIL_USE_TLS = False
+EMAIL_USE_SSL = True 
+EMAIL_HOST_USER = 'no-reply@videoflix.karol-kowalczyk.de'
+
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+

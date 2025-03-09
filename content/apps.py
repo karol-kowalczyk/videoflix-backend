@@ -5,5 +5,4 @@ class ContentConfig(AppConfig):
     name = 'content'
 
     def ready(self):
-        # Importiere die Signale, damit sie registriert werden
         import content.signals
