@@ -22,22 +22,19 @@ class UserSerializer(serializers.ModelSerializer):
         return attrs
 
     def create(self, validated_data):
-        # Entferne confirm_password bevor der User erstellt wird
         validated_data.pop('confirm_password')
         user = User.objects.create_user(
             email=validated_data['email'],
             password=validated_data['password'],
-            # Automatisch generierter Username als Fallback
             username=validated_data.get('username', validated_data['email'])
         )
         return user
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
-    # Email als Login-Feld verwenden
+
     username_field = 'email'
 
     def validate(self, attrs):
-        # Konvertiere email zu lowercase
         attrs['email'] = attrs.get('email', '').lower()
         return super().validate(attrs)
 

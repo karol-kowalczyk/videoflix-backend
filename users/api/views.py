@@ -3,9 +3,9 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.core.mail import send_mail, get_connection
 from django.conf import settings
-from ..models import CustomUser, PasswordResetToken  # Importiere dein User- und Token-Modell
-from ..serializers import UserSerializer, CustomTokenObtainPairSerializer  # Serializer importieren
-import uuid  # Für eindeutige Token
+from ..models import CustomUser, PasswordResetToken
+from ..serializers import UserSerializer, CustomTokenObtainPairSerializer
+import uuid
 from django.utils import timezone
 from django.urls import reverse
 import smtplib
@@ -15,15 +15,14 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
 from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import make_password
+from decouple import config
 
-# SMTP-Einstellungen
 SMTP_HOST = 'mail.karol-kowalczyk.de'
 SMTP_PORT = 465
 SMTP_USER = 'no-reply@videoflix.karol-kowalczyk.de'
-SMTP_PASSWORD = 'no-reply.videoflix-1'
+SMTP_PASSWORD = config('SMTP_PASSWORD')
 USE_SSL = True
 
-# 🟢 Funktion zum Senden von E-Mails mit Link
 def send_test_email(recipient, reset_link):
     sender = 'no-reply@videoflix.karol-kowalczyk.de'
     subject = 'Passwort zurücksetzen - Videoflix'
@@ -45,7 +44,6 @@ def send_test_email(recipient, reset_link):
         print(f"Fehler beim Senden der E-Mail: {e}")
         return False
 
-# 🟢 Registrierung
 class RegisterView(APIView):
     def post(self, request):
         serializer = UserSerializer(data=request.data)
@@ -54,7 +52,6 @@ class RegisterView(APIView):
             return Response({"message": "Registrierung erfolgreich!"}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-# 🟢 Login
 class LoginView(APIView):
     def post(self, request):
         serializer = CustomTokenObtainPairSerializer(data=request.data)
@@ -64,71 +61,75 @@ class LoginView(APIView):
         except Exception as e:
             return Response({"message": str(e)}, status=status.HTTP_401_UNAUTHORIZED)
 
-# 🟢 E-Mail prüfen und Passwort-Reset-Link senden
 class CheckEmailView(APIView):
     def post(self, request):
         email = request.data.get('email')
         if email:
-            try:
-                user = CustomUser.objects.get(email=email)
-                # 🟢 Token generieren und speichern
-                token = str(uuid.uuid4())
-                PasswordResetToken.objects.create(
-                    user=user, 
-                    token=token, 
-                    expires_at=timezone.now() + timezone.timedelta(hours=1)
-                )
-
-                # 🟢 Link generieren für localhost mit kodierter Benutzer-ID
-                uidb64 = urlsafe_base64_encode(force_bytes(user.pk))
-                reset_link = f"http://localhost:4200/set-new-password?uid={uidb64}&token={token}"
-                send_test_email(email, reset_link)  # Link in die E-Mail packen
-
-                return Response({"message": "E-Mail existiert. Link zum Zurücksetzen wurde gesendet."}, status=status.HTTP_200_OK)
-            except CustomUser.DoesNotExist:
-                return Response({"message": "E-Mail existiert nicht."}, status=status.HTTP_404_NOT_FOUND)
+            return self.handle_valid_email(email)
         return Response({"error": "E-Mail-Adresse fehlt!"}, status=status.HTTP_400_BAD_REQUEST)
 
-# 🟢 Passwort zurücksetzen mit Token
+    def handle_valid_email(self, email):
+        try:
+            user = CustomUser.objects.get(email=email)
+            token = self.generate_reset_token(user)
+            uidb64 = self.encode_user_id(user)
+            reset_link = self.create_reset_link(uidb64, token)
+            self.send_reset_email(email, reset_link)
+            return Response({"message": "E-Mail existiert. Link zum Zurücksetzen wurde gesendet."}, status=status.HTTP_200_OK)
+        except CustomUser.DoesNotExist:
+            return Response({"message": "E-Mail existiert nicht."}, status=status.HTTP_404_NOT_FOUND)
+
+    def generate_reset_token(self, user):
+        token = str(uuid.uuid4())
+        PasswordResetToken.objects.create(
+            user=user, 
+            token=token, 
+            expires_at=timezone.now() + timezone.timedelta(hours=1)
+        )
+        return token
+
+    def encode_user_id(self, user):
+        return urlsafe_base64_encode(force_bytes(user.pk))
+
+    def create_reset_link(self, uidb64, token):
+        return f"http://localhost:4200/set-new-password?uid={uidb64}&token={token}"
+
+    def send_reset_email(self, email, reset_link):
+        send_test_email(email, reset_link)
+
 User = get_user_model()
 token_generator = PasswordResetTokenGenerator()
 
 class ResetPasswordView(APIView):
     def post(self, request, uidb64, token):
         try:
-            # 🟢 Debug: Zeige UID und Token
-            print(f"UIDB64: {uidb64}, Token: {token}")
+            user = self.get_user_from_uid(uidb64)
+            reset_token = self.get_reset_token(user, token)
 
-            # Benutzer-ID entschlüsseln
-            uid = urlsafe_base64_decode(uidb64).decode()
-            print(f"Entschlüsselte Benutzer-ID: {uid}")
-
-            user = User.objects.get(pk=uid)
-
-            # 🟢 Überprüfen, ob der Token in der DB existiert und gültig ist
-            try:
-                reset_token = PasswordResetToken.objects.get(user=user, token=token)
-                
-                # Prüfen, ob der Token abgelaufen ist
-                if reset_token.expires_at < timezone.now():
-                    print("Token ist abgelaufen!")
-                    return Response({"error": "Ungültiger oder abgelaufener Token!"}, status=status.HTTP_400_BAD_REQUEST)
-            
-            except PasswordResetToken.DoesNotExist:
-                print("Ungültiger Token!")
+            if self.is_token_expired(reset_token):
                 return Response({"error": "Ungültiger oder abgelaufener Token!"}, status=status.HTTP_400_BAD_REQUEST)
 
-            # 🟢 Neues Passwort setzen
-            new_password = request.data.get('new_password')
-            if new_password:
-                user.password = make_password(new_password)
-                user.save()
-                # 🟢 Token löschen nach erfolgreicher Passwortänderung
-                reset_token.delete()
-                return Response({"message": "Passwort erfolgreich geändert!"}, status=status.HTTP_200_OK)
-            else:
-                return Response({"error": "Kein Passwort angegeben!"}, status=status.HTTP_400_BAD_REQUEST)
+            return self.reset_password(request, user, reset_token)
 
         except (TypeError, ValueError, OverflowError, User.DoesNotExist) as e:
             print(f"Fehler: {e}")
             return Response({"error": "Ungültiger Benutzer!"}, status=status.HTTP_400_BAD_REQUEST)
+
+    def get_user_from_uid(self, uidb64):
+        uid = urlsafe_base64_decode(uidb64).decode()
+        return User.objects.get(pk=uid)
+
+    def get_reset_token(self, user, token):
+        return PasswordResetToken.objects.get(user=user, token=token)
+
+    def is_token_expired(self, reset_token):
+        return reset_token.expires_at < timezone.now()
+
+    def reset_password(self, request, user, reset_token):
+        new_password = request.data.get('new_password')
+        if new_password:
+            user.password = make_password(new_password)
+            user.save()
+            reset_token.delete()
+            return Response({"message": "Passwort erfolgreich geändert!"}, status=status.HTTP_200_OK)
+        return Response({"error": "Kein Passwort angegeben!"}, status=status.HTTP_400_BAD_REQUEST)
