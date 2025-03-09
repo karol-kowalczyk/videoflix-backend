@@ -174,4 +174,34 @@ STATIC_URL = 'static/'
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
+from decouple import config
+DEFAULT_FROM_EMAIL = 'no-reply@videoflix.karol-kowalczyk.de'
+
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+# settings.py
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'mail.karol-kowalczyk.de'
+EMAIL_PORT = 465
+EMAIL_USE_TLS = False  # ❌ Muss aus sein für Port 465
+EMAIL_USE_SSL = True   # ✔️ Muss an sein für Port 465
+EMAIL_HOST_USER = 'no-reply@videoflix.karol-kowalczyk.de'
+EMAIL_HOST_PASSWORD = 'no-reply.videoflix-1'  # Aus .env laden
+
+# # E-Mail-Konfiguration für all-inkl.com
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = 'mail.karol-kowalczyk.de'
+# EMAIL_PORT = 465
+# EMAIL_HOST_USER = 'no-reply@videoflix.karol-kowalczyk.de'  # Korrigierte E-Mail-Adresse
+# EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')  # Passwort aus .env-Datei geladen
+# EMAIL_USE_TLS = False
+# EMAIL_USE_SSL = True
+# DEFAULT_FROM_EMAIL = 'no-reply@videoflix.karol-kowalczyk.de'
+
+# Für Gmail (als Alternative)
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = 'smtp.gmail.com'
+# EMAIL_PORT = 587
+# EMAIL_HOST_USER = 'deine-email@gmail.com'
+# EMAIL_HOST_PASSWORD = 'dein-app-passwort'  # Erstelle ein App-Passwort in Gmail
+# EMAIL_USE_TLS = True
+# DEFAULT_FROM_EMAIL = 'deine-email@gmail.com' no-reply.videoflix-1
