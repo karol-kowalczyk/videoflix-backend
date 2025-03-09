@@ -23,7 +23,7 @@ Videoflix is a video-on-demand platform for end users. The frontend can be found
 cd to_your_project_directory
 git clone git@github.com:DanielSchn/videoflix-backend.git
 cd videoflix-backend
-
+```
 ### 2. Create a virtual environment
 
 Create and activate a virtual Python environment:
@@ -31,14 +31,14 @@ Create and activate a virtual Python environment:
 ```bash
 python -m venv env
 source env/bin/activate  # Linux/Mac
-
+```
 ### 3. Install dependencies
 
 Install the required dependencies using the following command:
 
 ```bash
 pip install -r requirements.txt
-
+```
 
 ### 4. Initialize the Django project
 
@@ -48,7 +48,7 @@ Migrate the database and start the server:
 python manage.py makemigrations
 python manage.py migrate
 python manage.py runserver
-
+```
 
 The project will run, depending on your configuration, at http://127.0.0.1:8000.
 
@@ -58,7 +58,7 @@ You can create a superuser directly via the terminal with the following command:
 
 ```bash
 python manage.py createsuperuser
-
+```
 
 ### 6. Video upload via management command or API view
 
@@ -66,7 +66,7 @@ python manage.py createsuperuser
 
 ```bash
 python manage.py create_video_list
-
+```
 
 Before using this command, you must adjust the video list with the appropriate filenames. Alternatively, the videos can be provided upon request. The folder containing the videos must be specified in the .env file under VIDEO_FOLDER.
 
@@ -76,14 +76,14 @@ You can upload videos via the API at the following endpoint:
 
 ```bash
 http://127.0.0.1:8000/api/video/
-
+```
 
 Videos can also be uploaded here. The thumbnail filenames must follow this format:
 
 ```objc
 ANY-NAME_ALLOWED-CATEGORY.jpg or .png
 Allowed categories are listed in the .env file under ALLOWED_CATEGORIES. The category in the filename determines the video category, which is extracted during the upload process.
-
+```
 ## Konfiguration
 
 In the `settings.py` file, several important settings have been configured to run the project locally:
@@ -114,7 +114,7 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.TokenAuthentication',
     ],
 }
-
+```
 These settings enable permissions and authentication.
 
 ## Usage
@@ -126,13 +126,13 @@ Once the server is running, you can use the API to interact with the Videoflix f
 ```bash
 python manage.py makemigrations
 python manage.py migrate
-
+```
 
 ### Start the development server:
 
 ```bash
 python manage.py runserver
-
+```
 ## Deployment
 
 There are currently no specific deployment instructions for this project.
