@@ -21,7 +21,7 @@ Videoflix is a video-on-demand platform for end users. The frontend can be found
 
 ```bash
 cd to_your_project_directory
-git clone git@github.com:DanielSchn/videoflix-backend.git
+git clone git@github.com:karol-kowalczyk/videoflix-backend.git
 cd videoflix-backend
 ```
 ### 2. Create a virtual environment
