@@ -92,7 +92,7 @@ class CheckEmailView(APIView):
         return urlsafe_base64_encode(force_bytes(user.pk))
 
     def create_reset_link(self, uidb64, token):
-        return f"http://localhost:4200/set-new-password?uid={uidb64}&token={token}"
+        return f"https://videoflix.karol-kowalczyk.de/set-new-password?uid={uidb64}&token={token}"
 
     def send_reset_email(self, email, reset_link):
         send_test_email(email, reset_link)
