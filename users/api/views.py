@@ -48,9 +48,44 @@ class RegisterView(APIView):
     def post(self, request):
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
-            return Response({"message": "Registrierung erfolgreich!"}, status=status.HTTP_201_CREATED)
+            user = serializer.save()
+            self.send_activation_email(user)
+            return Response({"message": "Registrierung erfolgreich! Bitte überprüfen Sie Ihre E-Mail, um Ihr Konto zu aktivieren."}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def send_activation_email(self, user):
+        token = str(uuid.uuid4())
+        ActivationToken.objects.create(
+            user=user, 
+            token=token, 
+            expires_at=timezone.now() + timezone.timedelta(hours=24)
+        )
+        activation_link = self.create_activation_link(token)
+        self.send_email(user.email, activation_link)
+
+    def create_activation_link(self, token):
+        return f"https://videoflix-frontend.karol-kowalczyk.de/activate-account?token={token}"
+
+    def send_email(self, recipient, activation_link):
+        sender = 'no-reply@videoflix.karol-kowalczyk.de'
+        subject = 'Aktivieren Sie Ihr Konto - Videoflix'
+        body = f"Hallo,\n\nKlicken Sie auf den folgenden Link, um Ihr Konto zu aktivieren:\n{activation_link}\n\nDer Link ist 24 Stunden gültig.\n\nViele Grüße,\nDein Videoflix-Team"
+
+        msg = MIMEText(body)
+        msg['Subject'] = subject
+        msg['From'] = sender
+        msg['To'] = recipient
+
+        try:
+            server = smtplib.SMTP_SSL(SMTP_HOST, SMTP_PORT)
+            server.login(SMTP_USER, SMTP_PASSWORD)
+            server.sendmail(sender, [recipient], msg.as_string())
+            server.quit()
+            print("Aktivierungs-E-Mail erfolgreich gesendet!")
+            return True
+        except Exception as e:
+            print(f"Fehler beim Senden der Aktivierungs-E-Mail: {e}")
+            return False
 
 class LoginView(APIView):
     def post(self, request):
@@ -60,6 +95,21 @@ class LoginView(APIView):
                 return Response(serializer.validated_data, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({"message": str(e)}, status=status.HTTP_401_UNAUTHORIZED)
+
+class ActivateAccountView(APIView):
+    def get(self, request, token):
+        try:
+            activation_token = ActivationToken.objects.get(token=token)
+            if activation_token.is_valid():
+                user = activation_token.user
+                user.is_active = True
+                user.save()
+                activation_token.delete()
+                return Response({"message": "Konto erfolgreich aktiviert!"}, status=status.HTTP_200_OK)
+            else:
+                return Response({"error": "Ungültiger oder abgelaufener Token!"}, status=status.HTTP_400_BAD_REQUEST)
+        except ActivationToken.DoesNotExist:
+            return Response({"error": "Ungültiger Token!"}, status=status.HTTP_400_BAD_REQUEST)
 
 class CheckEmailView(APIView):
     def post(self, request):
