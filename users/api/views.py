@@ -61,7 +61,7 @@ class RegisterView(APIView):
             token = str(uuid.uuid4())
             expires_at = timezone.now() + timedelta(days=1)
             activation_token = ActivationToken.objects.create(user=user, token=token, expires_at=expires_at)
-            activation_link = f"http://localhost:4200/activate-account?token={token}"
+            activation_link = f"https://videoflix-backend.karol-kowalczyk.de/activate-account?token={token}"
             send_activation_email(user.email, activation_link)
             return Response({"message": "Registrierung erfolgreich!"}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -119,7 +119,7 @@ class CheckEmailView(APIView):
         return urlsafe_base64_encode(force_bytes(user.pk))
 
     def create_reset_link(self, uidb64, token):
-        return f"http://localhost:4200/set-new-password?uid={uidb64}&token={token}"
+        return f"https://videoflix-backend.karol-kowalczyk.de/set-new-password?uid={uidb64}&token={token}"
 
     def send_reset_email(self, email, reset_link):
         send_test_email(email, reset_link)
