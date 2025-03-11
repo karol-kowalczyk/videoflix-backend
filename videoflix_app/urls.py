@@ -26,4 +26,4 @@ urlpatterns = [
     path('django-rq/', include('django_rq.urls')),
     path('users/', include('users.api.urls')),
     path('api/', include('content.urls')),  # Neue Zeile für die content-API
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) 
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)  
