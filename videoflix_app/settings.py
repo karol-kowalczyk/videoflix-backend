@@ -33,7 +33,8 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:57639",     # Dein aktueller Port
     "http://127.0.0.1:8000",
     "https://videoflix.karol-kowalczyk.de",
-    '34.13.144.92'
+    '34.13.144.92',
+    'https://videoflix-backend.karol-kowalczyk.de/'
 ]
 
 CACHES = {
