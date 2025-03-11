@@ -26,33 +26,22 @@ class UserSerializer(serializers.ModelSerializer):
         user = User.objects.create_user(
             email=validated_data['email'],
             password=validated_data['password'],
-            username=validated_data.get('username', validated_data['email']),
-            is_active=False  # Benutzer ist zunächst inaktiv
+            username=validated_data.get('username', validated_data['email'])
         )
         return user
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
-
     username_field = 'email'
-
-    def validate(self, attrs):
-        attrs['email'] = attrs.get('email', '').lower()
-        return super().validate(attrs)
-
-    @classmethod
-    def get_token(cls, user):
-        token = super().get_token(user)
-        token['email'] = user.email
-        token['user_id'] = user.id
-        return token
-
     def validate(self, attrs):
         data = super().validate(attrs)
+        user = self.user
+        if not user.is_activated:
+            raise exceptions.AuthenticationFailed('Account not activated.')
         data.update({
             'token': data.pop('access'),
             'user': {
-                'id': self.user.id,
-                'email': self.user.email
+                "id": self.user.id,
+                "email": self.user.email
             }
         })
         return data

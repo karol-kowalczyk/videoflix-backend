@@ -6,5 +6,5 @@ urlpatterns = [
     path('login/', LoginView.as_view(), name='login'),
     path('check-email/', CheckEmailView.as_view(), name='check-email'),
     path('reset-password/<str:uidb64>/<str:token>/', ResetPasswordView.as_view(), name='reset-password'),
-    path('activate-account/<str:token>/', ActivateAccountView.as_view(), name='activate-account'),
+    path('activate-account/', ActivateAccountView.as_view(), name='activate-account'),
 ]
