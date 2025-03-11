@@ -144,7 +144,7 @@ class ResetPasswordView(APIView):
         uid = urlsafe_base64_decode(uidb64).decode()
         return get_user_model().objects.get(pk=uid)
 
-    def validate_token(self, user, token):
+    def validate_token(self, user, token): 
         reset_token = PasswordResetToken.objects.get(user=user, token=token)
         if not reset_token.is_valid():
             raise ValueError("Ungültiger oder abgelaufener Token.")
