@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 import os
+from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -26,15 +27,42 @@ SECRET_KEY = 'django-insecure-#d91((1kh9lzw)%68r6+4x^24^3_rc#m2(5+9%^@kjl2b)^t*g
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['http://127.0.0.1:5500', '127.0.0.1', 'localhost:8000', 'localhost', '34.13.144.92', 'videoflix-backend.karol-kowalczyk.de']
+ALLOWED_HOSTS = [
+    '127.0.0.1',
+    'localhost',
+    'localhost:8000',
+    'videoflix-backend.karol-kowalczyk.de',
+    'videoflix-frontend.karol-kowalczyk.de',  # Hinzugefügt für das Frontend
+    '34.13.144.92',  # Falls du eine IP-Adresse nutzt
+]
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:4200",      # Standard Angular-Port
     "http://localhost:57639",     # Dein aktueller Port
     "http://127.0.0.1:8000",
     'https://34.13.144.92',
-    # 'https://videoflix-backend.karol-kowalczyk.de/',
-    
+    'https://videoflix-backend.karol-kowalczyk.de',  # Hinzugefügt für das Backend
+    'https://videoflix-frontend.karol-kowalczyk.de',  # Hinzugefügt für das Frontend
+]
+
+CORS_ALLOW_HEADERS = [
+    'content-type',
+    'authorization',
+    'x-csrftoken',
+    'x-requested-with',
+]
+
+CORS_ALLOW_METHODS = [
+    'GET',
+    'POST',
+    'PUT',
+    'DELETE',
+    'OPTIONS',
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://videoflix-frontend.karol-kowalczyk.de',
+    'https://videoflix-backend.karol-kowalczyk.de',
 ]
 
 CACHES = {
@@ -181,11 +209,10 @@ STATICFILES_DIRS = [
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
-from decouple import config
-
-DEFAULT_FROM_EMAIL = 'no-reply@videoflix.karol-kowalczyk.de'
-
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# E-Mail Einstellungen
+DEFAULT_FROM_EMAIL = 'no-reply@videoflix.karol-kowalczyk.de'
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'mail.karol-kowalczyk.de'
@@ -195,4 +222,3 @@ EMAIL_USE_SSL = True
 EMAIL_HOST_USER = 'no-reply@videoflix.karol-kowalczyk.de'
 
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
-
