@@ -11,4 +11,4 @@ router.register(r'videos', VideoViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
-]
+] + staticfiles_urlpatterns()
