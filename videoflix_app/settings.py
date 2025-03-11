@@ -178,6 +178,8 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),  # Falls du ein 'static'-Verzeichnis im Projekt hast
 ]
 
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # Für Collectstatic
+
 
 
 # Default primary key field type
