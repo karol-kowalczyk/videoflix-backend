@@ -37,20 +37,20 @@ def send_email(recipient, subject, body):
         with smtplib.SMTP_SSL(SMTP_HOST, SMTP_PORT) as server:
             server.login(SMTP_USER, SMTP_PASSWORD)
             server.sendmail(msg['From'], [msg['To']], msg.as_string())
-            print(f"{subject} E-Mail gesendet!")
+            print(f"{subject} Email sent!")
             return True
     except Exception as e:
-        print(f"Fehler beim Senden der {subject} E-Mail: {e}")
+        print(f"Error sending {subject} email: {e}")
         return False
 
 def send_test_email(recipient, reset_link):
-    subject = 'Passwort zurücksetzen - Videoflix'
-    body = f"Hallo,\n\nKlicken Sie auf den folgenden Link, um Ihr Passwort zurückzusetzen:\n{reset_link}\n\nDer Link ist 1 Stunde gültig.\n\nViele Grüße,\nDein Videoflix-Team"
+    subject = 'Reset Password - Videoflix'
+    body = f"Hello,\n\nClick the following link to reset your password:\n{reset_link}\n\nThe link is valid for 1 hour.\n\nBest regards,\nYour Videoflix Team"
     return send_email(recipient, subject, body)
 
 def send_activation_email(recipient, activation_link):
-    subject = 'Account aktivieren - Videoflix'
-    body = f"Hallo,\n\nklicken Sie auf den folgenden Link, um Ihren Account zu aktivieren:\n{activation_link}\n\nDer Link ist 24 Std gültig.\n\nViele Grüße,\nDein Videoflix-Team"
+    subject = 'Activate Account - Videoflix'
+    body = f"Hello,\n\nClick the following link to activate your account:\n{activation_link}\n\nThe link is valid for 24 hours.\n\nBest regards,\nYour Videoflix Team"
     return send_email(recipient, subject, body)
 
 class RegisterView(APIView):
@@ -63,7 +63,7 @@ class RegisterView(APIView):
             activation_token = ActivationToken.objects.create(user=user, token=token, expires_at=expires_at)
             activation_link = f"https://videoflix.karol-kowalczyk.de/activate-account?token={token}"
             send_activation_email(user.email, activation_link)
-            return Response({"message": "Registrierung erfolgreich!"}, status=status.HTTP_201_CREATED)
+            return Response({"message": "Registration successful!"}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class ActivateAccountView(APIView):
@@ -79,25 +79,25 @@ class ActivateAccountView(APIView):
                 if activation_token.is_valid():
                     self.activate_user(activation_token.user)
                     activation_token.delete()
-                    return Response({"message": "Account aktiviert."}, status=status.HTTP_200_OK)
-                return Response({"error": "Aktivierungslink ist abgelaufen."}, status=status.HTTP_400_BAD_REQUEST)
+                    return Response({"message": "Account activated."}, status=status.HTTP_200_OK)
+                return Response({"error": "Activation link has expired."}, status=status.HTTP_400_BAD_REQUEST)
             except ActivationToken.DoesNotExist:
-                return Response({"error": "Ungültiger Aktivierungstoken."}, status=status.HTTP_400_BAD_REQUEST)
-        return Response({"error": "Token fehlt."}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({"error": "Invalid activation token."}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({"error": "Token is missing."}, status=status.HTTP_400_BAD_REQUEST)
 
 class LoginView(APIView):
     def post(self, request):
         serializer = CustomTokenObtainPairSerializer(data=request.data)
         if serializer.is_valid():
             return Response(serializer.validated_data, status=status.HTTP_200_OK)
-        return Response({"message": "Ungültige Anmeldedaten."}, status=status.HTTP_401_UNAUTHORIZED)
+        return Response({"message": "Invalid login credentials."}, status=status.HTTP_401_UNAUTHORIZED)
 
 class CheckEmailView(APIView):
     def post(self, request):
         email = request.data.get('email')
         if email:
             return self.handle_valid_email(email)
-        return Response({"error": "E-Mail-Adresse fehlt!"}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({"error": "Email address is missing!"}, status=status.HTTP_400_BAD_REQUEST)
 
     def handle_valid_email(self, email):
         try:
@@ -106,9 +106,9 @@ class CheckEmailView(APIView):
             uidb64 = self.encode_user_id(user)
             reset_link = self.create_reset_link(uidb64, token)
             self.send_reset_email(email, reset_link)
-            return Response({"message": "E-Mail existiert. Link zum Zurücksetzen wurde gesendet."}, status=status.HTTP_200_OK)
+            return Response({"message": "Email exists. Reset link has been sent."}, status=status.HTTP_200_OK)
         except CustomUser.DoesNotExist:
-            return Response({"message": "E-Mail existiert nicht."}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"message": "Email does not exist."}, status=status.HTTP_404_NOT_FOUND)
 
     def generate_reset_token(self, user):
         token = str(uuid.uuid4())
@@ -129,16 +129,16 @@ class ResetPasswordView(APIView):
         try:
             new_password = request.data.get('new_password')
             if not new_password:
-                return Response({"detail": "Neues Passwort fehlt."}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({"detail": "New password is missing."}, status=status.HTTP_400_BAD_REQUEST)
             user = self.get_user_from_uid(uidb64)
             self.validate_token(user, token)
             user.password = make_password(new_password)
             user.save()
-            return Response({"detail": "Passwort erfolgreich zurückgesetzt."}, status=status.HTTP_200_OK)
+            return Response({"detail": "Password successfully reset."}, status=status.HTTP_200_OK)
         except ValueError as e:
             return Response({"detail": str(e)}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
-            return Response({"detail": "Ungültiger Link oder abgelaufener Token."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"detail": "Invalid link or expired token."}, status=status.HTTP_400_BAD_REQUEST)
 
     def get_user_from_uid(self, uidb64):
         uid = urlsafe_base64_decode(uidb64).decode()
@@ -147,4 +147,4 @@ class ResetPasswordView(APIView):
     def validate_token(self, user, token): 
         reset_token = PasswordResetToken.objects.get(user=user, token=token)
         if not reset_token.is_valid():
-            raise ValueError("Ungültiger oder abgelaufener Token.")
+            raise ValueError("Invalid or expired token.")
