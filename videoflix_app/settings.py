@@ -33,18 +33,18 @@ ALLOWED_HOSTS = [
     'localhost:8000',
     'videoflix-backend.karol-kowalczyk.de',
     'videoflix-frontend.karol-kowalczyk.de',  
-    'videoflix.karol-kowalczyk.de',# Hinzugefügt für das Frontend
+    'videoflix.karol-kowalczyk.de',
     '34.38.7.179',
 ]
 
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:4200",      # Standard Angular-Port
-    "http://localhost:57639",     # Dein aktueller Port
+    "http://localhost:4200",    
+    "http://localhost:57639",   
     "http://127.0.0.1:8000",
     'https://34.13.144.92',
-    'https://videoflix-backend.karol-kowalczyk.de',  # Hinzugefügt für das Backend
+    'https://videoflix-backend.karol-kowalczyk.de',
     'https://videoflix-frontend.karol-kowalczyk.de',
-    'https://videoflix.karol-kowalczyk.de',  # Hinzugefügt für das Frontend
+    'https://videoflix.karol-kowalczyk.de', 
 ]
 
 CORS_ALLOW_HEADERS = [
