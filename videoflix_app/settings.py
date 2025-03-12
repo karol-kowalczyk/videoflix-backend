@@ -33,7 +33,7 @@ ALLOWED_HOSTS = [
     'localhost:8000',
     'videoflix-backend.karol-kowalczyk.de',
     'videoflix-frontend.karol-kowalczyk.de',  # Hinzugefügt für das Frontend
-    '34.13.153.239',
+    '34.38.7.179',
 ]
 
 CORS_ALLOWED_ORIGINS = [
