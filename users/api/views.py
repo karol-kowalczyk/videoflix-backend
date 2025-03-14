@@ -48,31 +48,10 @@ def send_test_email(recipient, reset_link):
     body = f"Hello,\n\nClick the following link to reset your password:\n{reset_link}\n\nThe link is valid for 1 hour.\n\nBest regards,\nYour Videoflix Team"
     return send_email(recipient, subject, body)
 
-from django.core.mail import send_mail
-from django.utils.html import format_html
-
 def send_activation_email(recipient, activation_link):
-    subject = "Activate Account - Videoflix"
-    html_message = format_html("""
-        <p>Hello,</p>
-        <p>We recently received a request to activate your account. If you made this request, please click on the following link to activate your account:</p>
-        <p><a href="{}" style="display: inline-block; padding: 10px 20px; background-color: #2E3EDF; color: #fff; text-decoration: none; border-radius: 5px; font-weight: bold;">Activate Account</a></p>
-        <p>Please note that for security reasons, this link is only valid for 24 hours.</p>
-        <p>If you did not request an account activation, please ignore this email.</p>
-        <p>Best regards,</p>
-        <p>Your Videoflix Team!</p>
-        <img src="https://yourdomain.com/path-to-videoflix-logo.png" alt="Videoflix Logo" width="150"/>
-    """, activation_link)
-
-    send_mail(
-        subject,
-        "",  # Der Textbody bleibt leer, da wir eine HTML-E-Mail senden
-        "noreply@videoflix.com",
-        [recipient],
-        html_message=html_message,
-        fail_silently=False,
-    )
-
+    subject = 'Activate Account - Videoflix'
+    body = f"Hello,\n\nClick the following link to activate your account:\n{activation_link}\n\nThe link is valid for 24 hours.\n\nBest regards,\nYour Videoflix Team"
+    return send_email(recipient, subject, body)
 
 class RegisterView(APIView):
     def post(self, request):
