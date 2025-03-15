@@ -57,8 +57,8 @@ python manage.py createsuperuser
 To upload videos using a management command:
 ```bash
 python manage.py create_video_list
+```
 Before using this command, you must adjust the video list with the appropriate filenames. Alternatively, the videos can be provided upon request. The folder containing the videos must be specified in the .env file under VIDEO_FOLDER.
-```bash
 
 To upload videos via the API view:
 ```bash
@@ -68,7 +68,7 @@ ANY-NAME_ALLOWED-CATEGORY.jpg or .png
 Allowed categories are listed in the .env file under ALLOWED_CATEGORIES. The category in the filename determines the video category, which is extracted during the upload process.
 ```
 
-Configuration
+## Configuration
 In the settings.py file, several important settings have been configured to run the project locally:
 ```bash
 INSTALLED_APPS = [
@@ -98,7 +98,7 @@ REST_FRAMEWORK = {
 ```
 These settings enable permissions and authentication.
 
-Usage
+## Usage
 Once the server is running, you can use the API to interact with the Videoflix frontend. Here are some useful commands:
 
 Migrate the database:
