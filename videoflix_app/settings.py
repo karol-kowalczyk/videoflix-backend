@@ -35,6 +35,7 @@ ALLOWED_HOSTS = [
     'videoflix-frontend.karol-kowalczyk.de',  
     'videoflix.karol-kowalczyk.de',
     '34.38.7.179',
+    '35.195.46.64',
 ]
 
 CORS_ALLOWED_ORIGINS = [
@@ -42,6 +43,7 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:57639",   
     "http://127.0.0.1:8000",
     'https://34.13.144.92',
+    'https://35.195.46.64',
     'https://videoflix-backend.karol-kowalczyk.de',
     'https://videoflix-frontend.karol-kowalczyk.de',
     'https://videoflix.karol-kowalczyk.de', 
