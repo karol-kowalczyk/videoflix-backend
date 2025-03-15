@@ -9,7 +9,6 @@ Videoflix is a video-on-demand platform for end users. The frontend can be found
 - Registration with email validation and login.
 - Password reset functionality.
 - Overview of a list of all videos.
-- Streaming videos in various resolutions.
 
 ## Prerequisites
 
