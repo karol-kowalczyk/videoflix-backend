@@ -11,7 +11,7 @@ CACHE_TTL = getattr(settings, 'CACHE_TTL', DEFAULT_TIMEOUT)
 @cache_page(CACHE_TTL)
 def recipes_view(request):
     return render(request, 'cookbook/recipes.html', {
-        'recipes': get_recipes()  # Entferne dies, wenn get_recipes() nicht definiert ist
+        'recipes': get_recipes()
     })
 
 class VideoViewSet(viewsets.ModelViewSet):
