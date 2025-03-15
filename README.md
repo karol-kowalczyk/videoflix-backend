@@ -61,12 +61,13 @@ python manage.py create_video_list
 Before using this command, you must adjust the video list with the appropriate filenames. Alternatively, the videos can be provided upon request. The folder containing the videos must be specified in the .env file under VIDEO_FOLDER.
 
 To upload videos via the API view:
-```bash
 http://127.0.0.1:8000/api/video/
+
 The thumbnail filenames must follow this format:
 ANY-NAME_ALLOWED-CATEGORY.jpg or .png
+
 Allowed categories are listed in the .env file under ALLOWED_CATEGORIES. The category in the filename determines the video category, which is extracted during the upload process.
-```
+
 
 ## Configuration
 In the settings.py file, several important settings have been configured to run the project locally:
