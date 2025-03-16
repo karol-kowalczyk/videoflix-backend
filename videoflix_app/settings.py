@@ -45,6 +45,7 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:8000",
     'https://34.13.144.92',
     'https://35.195.46.64',
+    'https://35.192.57.200',
     'https://videoflix-backend.karol-kowalczyk.de',
     'https://videoflix-frontend.karol-kowalczyk.de',
     'https://videoflix.karol-kowalczyk.de', 
