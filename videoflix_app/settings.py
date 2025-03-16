@@ -36,6 +36,7 @@ ALLOWED_HOSTS = [
     'videoflix.karol-kowalczyk.de',
     '34.38.7.179',
     '35.195.46.64',
+    '35.192.57.200',
 ]
 
 CORS_ALLOWED_ORIGINS = [
