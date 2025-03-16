@@ -167,7 +167,7 @@ def create_reset_link(uidb64, token):
     Returns:
         str: The complete password reset URL.
     """
-    return f"https://videoflix.karol-kowalczyk.de/set-new-password?uid={uidb64}&token={token}"
+    return f"http://localhost:4200/set-new-password?uid={uidb64}&token={token}"
 
 
 def get_user_from_uid(uidb64):

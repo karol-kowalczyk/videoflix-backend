@@ -47,7 +47,7 @@ class RegisterView(APIView):
             token = str(uuid.uuid4())
             expires_at = timezone.now() + timedelta(days=1) 
             ActivationToken.objects.create(user=user, token=token, expires_at=expires_at)
-            activation_link = f"https://videoflix.karol-kowalczyk.de/activate-account?token={token}"
+            activation_link = f"http://localhost:4200/activate-account?token={token}"
             send_activation_email(user.email, activation_link)
             return Response(
                 {"message": "Registration successful! Please check your email to activate your account."},
