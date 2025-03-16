@@ -13,16 +13,14 @@ class CustomUser(AbstractUser):
     an 'is_activated' field to track whether the user has activated their account.
     """
     
-    # Fields for custom user attributes
-    email = models.EmailField(unique=True)  # Email field, set to be unique
-    custom = models.CharField(max_length=500, default='')  # Custom text field for additional user info
-    phone = models.CharField(max_length=20, default='')  # Phone number field
-    address = models.CharField(max_length=150, default='')  # Address field
-    is_activated = models.BooleanField(default=False)  # Flag to check if the user has activated their account
+    email = models.EmailField(unique=True) 
+    custom = models.CharField(max_length=500, default='')
+    phone = models.CharField(max_length=20, default='') 
+    address = models.CharField(max_length=150, default='') 
+    is_activated = models.BooleanField(default=False) 
 
-    # Set the username field to 'email' instead of the default 'username'
     USERNAME_FIELD = 'email'  
-    REQUIRED_FIELDS = ['username']  # Ensure 'username' is required for creating a user (but email will be used for login)
+    REQUIRED_FIELDS = ['username']
 
     def __str__(self):
         """
@@ -59,10 +57,9 @@ class ActivationToken(models.Model):
     This model stores a token with an expiration time for activating a user account.
     """
     
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)  # Link to the CustomUser model
-    token = models.CharField(max_length=64, unique=True)  # Unique token for account activation
-    expires_at = models.DateTimeField()  # Expiration date and time for the token
-
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    token = models.CharField(max_length=64, unique=True)
+    expires_at = models.DateTimeField()
     def is_valid(self):
         """
         Check if the activation token is still valid.

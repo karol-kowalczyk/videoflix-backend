@@ -1,3 +1,4 @@
+import os
 import uuid
 import smtplib
 from email.mime.text import MIMEText
@@ -7,8 +8,12 @@ from django.contrib.auth import get_user_model
 from django.utils import timezone
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-
+from django.core.mail import EmailMultiAlternatives
 from ..models import ActivationToken, PasswordResetToken
+from django.core.mail import EmailMultiAlternatives
+from email.mime.image import MIMEImage
+from email.mime.multipart import MIMEMultipart
+
 
 
 def create_message(recipient, subject, body):
@@ -26,7 +31,7 @@ def create_message(recipient, subject, body):
     Returns:
         MIMEText: The created email message.
     """
-    msg = MIMEText(body)
+    msg = MIMEText(body, 'html')
     msg['Subject'] = subject
     msg['From'] = settings.SMTP_USER
     msg['To'] = recipient
@@ -59,20 +64,59 @@ def send_email(recipient, subject, body):
         print(f"Error sending {subject} email: {e}")
         return False
 
-
 def send_activation_email(recipient, activation_link):
     """
-    Sends an account activation email.
-
-    This function prepares an activation email and sends it to the recipient with the provided activation link.
-    The email contains instructions and a link that is valid for 24 hours.
-
-    Args:
-        recipient (str): The recipient's email address.
-        activation_link (str): The account activation URL.
+    Sends an account activation email with a styled HTML body.
+    The email includes inline CSS for improved visual design.
     """
     subject = 'Activate Your Account - Videoflix'
-    body = f"Hello,\n\nClick the following link to activate your account:\n{activation_link}\n\nThe link is valid for 24 hours.\n\nBest regards,\nYour Videoflix Team"
+    body = f"""
+    <html>
+      <head>
+        <style type="text/css">
+          body {{
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            padding: 20px;
+          }}
+          .container {{
+            max-width: 600px;
+            margin: auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+          }}
+          h2 {{
+            color: #white;
+            backgrund-color: #4856E3;
+          }}
+          .btn {{
+            display: inline-block;
+            background-color: #4856E3;
+            color: #fff;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 20px;
+            margin-top: 20px;
+          }}
+          p {{
+            line-height: 1.5;
+          }}
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <h2>Activate Your Account</h2>
+          <p>Hello,</p>
+          <p>Click the following link to activate your account:</p>
+          <p><a class="btn" href="{activation_link}">Activate Account</a></p>
+          <p>The link is valid for 24 hours.</p>
+          <p>Best regards,<br>Your Videoflix Team</p>
+        </div>
+      </body>
+    </html>
+    """
     send_email(recipient, subject, body)
 
 
