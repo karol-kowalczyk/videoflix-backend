@@ -17,6 +17,7 @@ from .utils import (
     get_user_from_uid,
     validate_token,
     activate_user,
+
 )
 
 
@@ -73,7 +74,7 @@ class ActivateAccountView(APIView):
         - Returns a success message or error details.
         
         Args:
-            request: The HTTP request object containing the activation token.
+            request: The HTTP request object containing the activation token .
         
         Returns:
             Response: A success message with HTTP 200 status or error details with HTTP 400 status.
