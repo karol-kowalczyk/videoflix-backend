@@ -34,9 +34,11 @@ ALLOWED_HOSTS = [
     'videoflix-backend.karol-kowalczyk.de',
     'videoflix-frontend.karol-kowalczyk.de',  
     'videoflix.karol-kowalczyk.de',
+    'videoflix-backe.karol-kowalczyk.de',
     '34.38.7.179',
     '35.195.46.64',
     '35.192.57.200',
+    '34.13.147.192',
 ]
 
 CORS_ALLOWED_ORIGINS = [
@@ -48,7 +50,9 @@ CORS_ALLOWED_ORIGINS = [
     'https://35.192.57.200',
     'https://videoflix-backend.karol-kowalczyk.de',
     'https://videoflix-frontend.karol-kowalczyk.de',
+    'http://videoflix-backe.karol-kowalczyk.de',
     'https://videoflix.karol-kowalczyk.de', 
+    'https://34.13.147.192/',
 ]
 
 CORS_ALLOW_HEADERS = [
