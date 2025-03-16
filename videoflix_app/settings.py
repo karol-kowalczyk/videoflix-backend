@@ -52,7 +52,7 @@ CORS_ALLOWED_ORIGINS = [
     'https://videoflix-frontend.karol-kowalczyk.de',
     'http://videoflix-backe.karol-kowalczyk.de',
     'https://videoflix.karol-kowalczyk.de', 
-    'https://34.13.147.192/',
+    'https://34.13.147.192',
 ]
 
 CORS_ALLOW_HEADERS = [
