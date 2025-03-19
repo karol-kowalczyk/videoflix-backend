@@ -233,11 +233,11 @@ EMAIL_USE_TLS = False
 EMAIL_USE_SSL = True 
 EMAIL_HOST_USER = 'no-reply@videoflix.karol-kowalczyk.de'
 
-EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+EMAIL_HOST_PASSWORD = 'no-reply.videoflix-1'
 
 # SMTP configuration for email sending
 SMTP_HOST = 'mail.karol-kowalczyk.de'
 SMTP_PORT = 465
 SMTP_USER = 'no-reply@videoflix.karol-kowalczyk.de'
-SMTP_PASSWORD = config('SMTP_PASSWORD')
+SMTP_PASSWORD = 'no-reply.videoflix-1'
 USE_SSL = True
