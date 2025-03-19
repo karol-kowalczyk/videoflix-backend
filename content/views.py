@@ -13,7 +13,6 @@ from .models import Video
 from .serializers import VideoSerializer
 from rest_framework import viewsets
 
-# Cache timeout duration, retrieved from Django settings
 CACHE_TTL = getattr(settings, 'CACHE_TTL', DEFAULT_TIMEOUT)
 
 @cache_page(CACHE_TTL)
@@ -30,7 +29,7 @@ def recipes_view(request):
         HttpResponse: The rendered HTML response with cached recipe data.
     """
     return render(request, 'cookbook/recipes.html', {
-        'recipes': get_recipes()  # Ensure get_recipes() is defined elsewhere
+        'recipes': get_recipes() 
     })
 
 class VideoViewSet(viewsets.ModelViewSet):
@@ -39,5 +38,5 @@ class VideoViewSet(viewsets.ModelViewSet):
 
     This viewset provides standard CRUD operations for the Video model using Django REST framework.
     """
-    queryset = Video.objects.all()  # Retrieves all Video objects from the database
-    serializer_class = VideoSerializer  # Specifies the serializer for the Video model
+    queryset = Video.objects.all() 
+    serializer_class = VideoSerializer 
