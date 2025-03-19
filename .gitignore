@@ -28,3 +28,4 @@ static/
 *.swo
 .idea/
 .vscode/
+.env
