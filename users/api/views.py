@@ -17,6 +17,7 @@ from .utils import (
     get_user_from_uid,
     validate_token,
     activate_user,
+
 )
 
 
@@ -47,7 +48,7 @@ class RegisterView(APIView):
             token = str(uuid.uuid4())
             expires_at = timezone.now() + timedelta(days=1) 
             ActivationToken.objects.create(user=user, token=token, expires_at=expires_at)
-            activation_link = f"https://videoflix.karol-kowalczyk.de/activate-account?token={token}"
+            activation_link = f"http://localhost:4200/activate-account?token={token}"
             send_activation_email(user.email, activation_link)
             return Response(
                 {"message": "Registration successful! Please check your email to activate your account."},
@@ -73,7 +74,7 @@ class ActivateAccountView(APIView):
         - Returns a success message or error details.
         
         Args:
-            request: The HTTP request object containing the activation token.
+            request: The HTTP request object containing the activation token .
         
         Returns:
             Response: A success message with HTTP 200 status or error details with HTTP 400 status.

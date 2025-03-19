@@ -88,7 +88,12 @@ def send_activation_email(recipient, activation_link):
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
           }}
           h2 {{
+<<<<<<< HEAD
             color: #d4856E3;
+=======
+            color: #white;
+            backgrund-color: #4856E3;
+>>>>>>> 89f0b06dfced8ac4aaad486b0a8a72f0ef277d66
           }}
           .btn {{
             display: inline-block;
@@ -96,7 +101,11 @@ def send_activation_email(recipient, activation_link):
             color: #fff;
             padding: 10px 20px;
             text-decoration: none;
+<<<<<<< HEAD
             border-radius: 5px;
+=======
+            border-radius: 20px;
+>>>>>>> 89f0b06dfced8ac4aaad486b0a8a72f0ef277d66
             margin-top: 20px;
           }}
           p {{
@@ -107,7 +116,10 @@ def send_activation_email(recipient, activation_link):
       <body>
         <div class="container">
           <h2>Activate Your Account</h2>
+<<<<<<< HEAD
           <img src="https://videoflix.kowalczyk-karol.de/media/little-email-logo.png" alt="Activation Logo" style="max-width:100%;height:auto;">
+=======
+>>>>>>> 89f0b06dfced8ac4aaad486b0a8a72f0ef277d66
           <p>Hello,</p>
           <p>Click the following link to activate your account:</p>
           <p><a class="btn" href="{activation_link}">Activate Account</a></p>

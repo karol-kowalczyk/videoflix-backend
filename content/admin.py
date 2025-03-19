@@ -1,8 +1,9 @@
 """
 Admin configuration for the Video model.
 
-This module defines the Django admin interface for managing Video instances,
-including import and export functionality using django-import-export.
+This module defines a ModelResource for the Video model to facilitate data
+import and export operations using the django-import-export package, and also
+registers a custom admin interface for managing Video instances.
 """
 
 from django.contrib import admin
@@ -12,10 +13,20 @@ from .models import Video
 
 class VideoResource(resources.ModelResource):
     """
-    Resource class for the Video model.
+    ModelResource for the Video model.
 
-    This class enables data import and export functionality for Video instances
-    within the Django admin panel.
+    This class provides configuration for importing and exporting Video data.
+    It uses the Video model as the basis for data serialization/deserialization.
     """
     class Meta:
-        model = Video  # Associates the resource with the Video model
+        model = Video
+
+@admin.register(Video)
+class VideoAdmin(ImportExportModelAdmin):
+    """
+    Custom admin interface for the Video model.
+
+    Inherits from ImportExportModelAdmin to enable data import/export features.
+    The list_display attribute specifies the model fields to display in the admin list view.
+    """
+    list_display = ['title', 'category', 'created_at']
