@@ -29,3 +29,4 @@ static/
 .idea/
 .vscode/
 .env
+env/
